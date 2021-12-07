@@ -9,6 +9,8 @@ public class GameSettings : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = targetFramerate;
+        Screen.SetResolution(320, 180, false);
     }
+    
 
 }

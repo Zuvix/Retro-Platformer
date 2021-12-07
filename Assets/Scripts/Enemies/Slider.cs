@@ -81,33 +81,47 @@ public class Slider : MovingEnemy
     }
     public override void Die()
     {
-        if (isSitting)
-        {
-            return;
-        }
-        if (!isTransformed)
-        {
-            isTransformed = true;
-            StopAllCoroutines();
-            animator.SetBool("isTransformed", true);
-            StartCoroutine(MoveAndKill());
-        }
-        else
-        {
-            StopAllCoroutines();
-            base.Die();
-        }
+        return;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isTransformed)
+        if (collision.CompareTag("Enemy"))
         {
-            if (collision.CompareTag("Enemy"))
+            if (isTransformed && Mathf.Abs(rigidBody.velocity.x) > 0.1f)
             {
                 collision.GetComponent<Enemy>().TakeDamage(1);
             }
         }
 
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log("Collision");
+            if (!isTransformed)
+            {
+                isTransformed = true;
+                StopAllCoroutines();
+                rigidBody.velocity = Vector2.zero;
+                animator.SetBool("isTransformed", true);
+            }
+            else if (Mathf.Abs(rigidBody.velocity.x) < 0.1f)
+            {
+                if (collision.gameObject.transform.position.x <= transform.position.x)
+                {
+                    if(movingRight==false) Flip();
+                }
+                else
+                {
+                    if (movingRight == true) Flip();
+                }
+                StartCoroutine(MoveAndKill());
+            }
+            else
+            {
+                StopAllCoroutines();
+                base.Die();
+            }
+
+        }
     }
 
 }
