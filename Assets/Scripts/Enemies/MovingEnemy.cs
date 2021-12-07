@@ -2,13 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallingEnemy : Enemy
+public class MovingEnemy : Enemy
 {
     [SerializeField]
     private LayerMask groundLayerMask;
     [SerializeField]
     protected float gravity=0.05f;
     protected bool isGrounded;
+    [SerializeField]
+    LayerMask wallMask;
+    Vector2 wallCheckTarget;
+    [SerializeField]
+    protected bool movingRight;
+    protected override void Awake()
+    {
+        base.Awake();
+        if (movingRight)
+        {
+            wallCheckTarget = Vector2.right;
+        }
+        else
+        {
+            wallCheckTarget = Vector2.left;
+        }
+    }
     protected virtual void FixedUpdate()
     {
         isGrounded = IsGrounded();
@@ -43,5 +60,37 @@ public class FallingEnemy : Enemy
         Debug.DrawRay(boxCollider2d.bounds.center - new Vector3(boxCollider2d.bounds.extents.x, boxCollider2d.bounds.extents.y + extraHeightText), Vector2.right * (boxCollider2d.bounds.extents.x * 2f), rayColor);
 
         return raycastHit.collider != null;
+    }
+    protected bool IsCloseToFall()
+    {
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics2D.Raycast((Vector2)transform.position + 0.5f * wallCheckTarget, Vector2.down, 1f, wallMask))
+        {
+            Debug.DrawRay((Vector2)transform.position + 0.5f * wallCheckTarget, Vector2.down * 1f, Color.green);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    protected bool IsCloseToWall()
+    {
+        if (Physics2D.Raycast(transform.position, wallCheckTarget, 0.5f, wallMask))
+        {
+            Debug.DrawRay(transform.position, wallCheckTarget * 0.5f, Color.yellow);
+            return true;
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, wallCheckTarget * 0.5f, Color.red);
+            return false;
+        }
+    }
+    protected void Flip()
+    {
+        movingRight = !movingRight;
+        spriteRenderer.flipX = !spriteRenderer.flipX;
+        wallCheckTarget = wallCheckTarget * -1;
     }
 }

@@ -7,33 +7,16 @@ public enum MoverType
     Wallie,
     Timmie,
 }
-public class Mover : FallingEnemy
+public class Mover : MovingEnemy
 {
     [SerializeField]
     private MoverType moverType;
-    private IEnumerator movement;
-    [SerializeField]
-    private bool movingRight;
     [SerializeField]
     private float speed;
     float timer;
     [SerializeField]
     float maxTimer;
-    [SerializeField]
-    LayerMask wallMask;
-    Vector2 wallCheckTarget;
-    protected override void Awake()
-    {
-        base.Awake();
-        if (movingRight)
-        {
-            wallCheckTarget = Vector2.right;
-        }
-        else
-        {
-            wallCheckTarget = Vector2.left;
-        }
-    }
+
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
@@ -72,37 +55,9 @@ public class Mover : FallingEnemy
                 return;
             }
         }
-        DetectWall();
-        DetectFall();
-    }
-    public void DetectFall()
-    {
-        // Does the ray intersect any objects excluding the player layer
-        if (Physics2D.Raycast((Vector2)transform.position + 0.5f*wallCheckTarget, Vector2.down, 1f, wallMask))
-        {
-            Debug.DrawRay((Vector2)transform.position + 0.5f * wallCheckTarget, Vector2.down * 1f, Color.green);
-        }
-        else
+        if(IsCloseToWall()|| IsCloseToFall())
         {
             Flip();
         }
-    }
-    public void DetectWall()
-    {
-        if (Physics2D.Raycast(transform.position, wallCheckTarget, 0.5f, wallMask))
-        {
-            Debug.DrawRay(transform.position, wallCheckTarget * 0.5f, Color.yellow);
-            Flip();
-        }
-        else
-        {
-            Debug.DrawRay(transform.position, wallCheckTarget * 0.5f, Color.red);
-        }
-    }
-    public void Flip()
-    {
-        movingRight = !movingRight;
-        spriteRenderer.flipX = !spriteRenderer.flipX;
-        wallCheckTarget = wallCheckTarget * -1;
     }
 }
