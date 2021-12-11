@@ -29,5 +29,17 @@ public class Combat : MonoBehaviour
                 Debug.Log("PlayerKilled");
             }
         }
+
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Trap"))
+        {
+            ITrap trap = collision.gameObject.GetComponent<ITrap>();
+            if (trap.IsActive())
+            {
+                Debug.Log("PlayerKilled");
+            }
+        }
     }
 }
