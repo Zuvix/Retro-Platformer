@@ -13,6 +13,7 @@ public class Collectible : MonoBehaviour
     float timeToMove = 0.75f;
     float maxY;
     float minY;
+    bool isActivated = true;
     [SerializeField]
     int scoreValue;
     private void Awake()
@@ -21,9 +22,10 @@ public class Collectible : MonoBehaviour
     }
     private void Start()
     {
-        transform.DOMoveY(transform.position.y + distance/2, timeToMove/2)
-            .OnComplete(MoveDown)
-            .SetEase(Ease.Linear);
+        if (isActivated)
+        {
+            Activate();
+        }
     }
     public void MoveUp()
     {
@@ -36,6 +38,18 @@ public class Collectible : MonoBehaviour
         transform.DOMoveY(transform.position.y - distance, timeToMove)
             .OnComplete(MoveUp)
             .SetEase(Ease.Linear);
+    }
+    public void Deactivate()
+    {
+        isActivated = false;
+        DOTween.Kill(transform);
+    }
+    public void Activate()
+    {
+        isActivated = true;
+        transform.DOMoveY(transform.position.y + distance/2, timeToMove/2)
+        .OnComplete(MoveDown)
+        .SetEase(Ease.Linear);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

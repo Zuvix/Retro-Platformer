@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
 public class Slider : MovingEnemy
 {
@@ -18,9 +17,11 @@ public class Slider : MovingEnemy
     bool isTransformed;
     [SerializeField]
     float transformedSpeedMultiplier = 2f;
+    Transform player;
     private void Start()
     {
         StartCoroutine(Sit());
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
     IEnumerator Move(float timeToMove)
     {
@@ -81,46 +82,40 @@ public class Slider : MovingEnemy
     }
     public override void Die()
     {
-        return;
+        if (!isTransformed && !isSitting)
+        {
+            isTransformed = true;
+            StopAllCoroutines();
+            rigidBody.velocity = Vector2.zero;
+            animator.SetBool("isTransformed", true);
+        }
+        else if (Mathf.Abs(rigidBody.velocity.x) < 0.1f && isTransformed)
+        {
+            if (player.position.x <= transform.position.x)
+            {
+                if (movingRight == false) Flip();
+            }
+            else
+            {
+                if (movingRight == true) Flip();
+            }
+            StartCoroutine(MoveAndKill());
+        }
+        else if (isTransformed && Mathf.Abs(rigidBody.velocity.x) > 0.1f)
+        {
+            StopAllCoroutines();
+            base.Die();
+        }
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void OnTriggerEnter2D(Collider2D collision)
     {
+        base.OnTriggerEnter2D(collision);
         if (collision.CompareTag("Enemy"))
         {
             if (isTransformed && Mathf.Abs(rigidBody.velocity.x) > 0.1f)
             {
                 collision.GetComponent<Enemy>().TakeDamage(1);
             }
-        }
-
-        if (collision.CompareTag("Player"))
-        {
-            Debug.Log("Collision");
-            if (!isTransformed)
-            {
-                isTransformed = true;
-                StopAllCoroutines();
-                rigidBody.velocity = Vector2.zero;
-                animator.SetBool("isTransformed", true);
-            }
-            else if (Mathf.Abs(rigidBody.velocity.x) < 0.1f)
-            {
-                if (collision.gameObject.transform.position.x <= transform.position.x)
-                {
-                    if(movingRight==false) Flip();
-                }
-                else
-                {
-                    if (movingRight == true) Flip();
-                }
-                StartCoroutine(MoveAndKill());
-            }
-            else
-            {
-                StopAllCoroutines();
-                base.Die();
-            }
-
         }
     }
 

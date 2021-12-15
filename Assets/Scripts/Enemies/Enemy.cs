@@ -38,4 +38,11 @@ public abstract class Enemy : MonoBehaviour
         rigidBody.velocity = Vector2.zero;
         this.enabled = false;
     }
+    public virtual void OnTriggerEnter2D(Collider2D coll)
+    {
+        if (coll.CompareTag("Void"))
+        {
+            Destroy(this.gameObject);
+        }
+    }
 }

@@ -96,7 +96,7 @@ public class Movement : MonoBehaviour
     {
         if (hasJumped)
         {
-            Debug.Log("Jumping");
+            //Debug.Log("Jumping");
             body.velocity = new Vector2(body.velocity.x, jumpVelocity * 0.5f);
             hasJumped = false;
         }

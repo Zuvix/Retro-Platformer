@@ -1,15 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Combat : MonoBehaviour
 {
     Rigidbody2D rigidBody;
     Movement movement;
+    Animator animator;
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         movement = GetComponent<Movement>();
+        animator = GetComponent<Animator>();
+    }
+   void KillPlayer()
+    {
+        movement.enabled = false;
+        rigidBody.velocity = Vector2.zero;
+        animator.SetBool("isDead", true);
+        this.enabled = false;
+        SceneLevelManager.Instance.PlayerDiedReload();
+    }
+    void FallKillPlayer()
+    {
+        movement.enabled = false;
+        this.enabled = false;
+        SceneLevelManager.Instance.PlayerDroppedReload();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -26,10 +43,13 @@ public class Combat : MonoBehaviour
             }
             else
             {
-                Debug.Log("PlayerKilled");
+                KillPlayer();
             }
         }
-
+        if (collision.CompareTag("Void"))
+        {
+            FallKillPlayer();
+        }
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -38,7 +58,7 @@ public class Combat : MonoBehaviour
             ITrap trap = collision.gameObject.GetComponent<ITrap>();
             if (trap.IsActive())
             {
-                Debug.Log("PlayerKilled");
+                KillPlayer();
             }
         }
     }

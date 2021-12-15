@@ -28,7 +28,7 @@ public class Flyier : Enemy
     }
     public void MoveUp()
     {
-        Debug.Log("Moving up");
+        //Debug.Log("Moving up");
         waitTillFlying = 3;
         animator.speed = 0.85f;
         transform.DOMoveY(transform.position.y + length, timeToMove)
@@ -37,7 +37,7 @@ public class Flyier : Enemy
     }
     public void FloatUp()
     {
-        Debug.Log("Floating up");
+        //Debug.Log("Floating up");
         animator.speed = 0.0f;
         animator.Play("Flying", 0, 0f);
         waitTillFlying--;
@@ -54,7 +54,7 @@ public class Flyier : Enemy
     }
     public void FloatDown()
     {
-        Debug.Log("Floating down");
+        //Debug.Log("Floating down");
         waitTillFlying--;
         animator.speed = 0.0f;
         animator.Play("Flying", 0, 0.5f);
@@ -71,7 +71,7 @@ public class Flyier : Enemy
     }
     public void MoveDown()
     {
-        Debug.Log("Moving down");
+        //Debug.Log("Moving down");
         waitTillFlying = 3;
         animator.speed = 0.85f;
         transform.DOMoveY(transform.position.y - length, timeToMove)

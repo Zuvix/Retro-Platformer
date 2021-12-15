@@ -7,14 +7,17 @@ public class SpikeTrap : MonoBehaviour, ITrap
 
     Animator animator;
     [SerializeField]
+    bool isAllwaysActive = true;
+    [SerializeField]
     float maxTimeUp=2f;
     [SerializeField]
-    float maxTimeDown=4f;
+    float maxTimeDown=3f;
     [SerializeField]
     float startDelay=0f;
     [SerializeField]
     bool startsActive;
     bool isActive;
+    
 
     private void Awake()
     {
@@ -22,13 +25,21 @@ public class SpikeTrap : MonoBehaviour, ITrap
     }
     private void Start()
     {
-        if (startsActive)
+        if (!isAllwaysActive)
         {
-            StartCoroutine(ActivateSpikes(startDelay));
+            if (startsActive)
+            {
+                StartCoroutine(ActivateSpikes(startDelay));
+            }
+            else
+            {
+
+            }
+            StartCoroutine(DeactivateSpikes(startDelay));
         }
         else
         {
-            StartCoroutine(DeactivateSpikes(startDelay));
+            isActive = true;
         }
     }
     IEnumerator ActivateSpikes(float delay)
